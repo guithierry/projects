@@ -1,0 +1,21 @@
+.overflow-styles {
+    overflow: scroll;
+}
+
+.overflow-styles::-webkit-scrollbar {
+    width: 5px;
+}
+
+.overflow-styles::-webkit-scrollbar-track {
+    background: none;
+}
+
+.overflow-styles::-webkit-scrollbar-thumb {
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 5px;
+
+}
+
+.dropdown-toggle::after {
+    display:none;
+}
