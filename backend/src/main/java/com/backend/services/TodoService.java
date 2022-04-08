@@ -1,6 +1,7 @@
 package com.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -31,33 +32,48 @@ public class TodoService {
 	}
 
 	@Transactional
-	public Todo create(TodoDto todoDto)  {
-		Project project = this.projectRepository.findById(UUID.fromString(todoDto.getProjectId()))
-				.orElseThrow(() -> new NotFoundException("Project not found."));
+	public Todo create(TodoDto todoDto) {
+		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(todoDto.getProjectId()));
+
+		if (!findProject.isPresent()) {
+			throw new NotFoundException("Project not found");
+		}
+
+		Project project = findProject.get();
 
 		Todo todo = new Todo();
 		BeanUtils.copyProperties(todoDto, todo);
-
 		todo.setProject(project);
+
 		project.getTodos().add(todo);
 
 		return todo;
 	}
 
 	public Todo read(String id) {
-		return this.todoRepository.findById(UUID.fromString(id))
-				.orElseThrow(() -> new NotFoundException("Todo not found."));
+		Optional<Todo> todo = this.todoRepository.findById(UUID.fromString(id));
+		
+		if (!todo.isPresent()) {
+			throw new NotFoundException("Todo not found");
+		}
+		
+		return todo.get();
 	}
 
+	@Transactional
 	public void delete(String id) {
 		this.todoRepository.deleteById(UUID.fromString(id));
 	}
 
 	@Transactional
 	public Todo updateStatus(String id, TodoStatusDto todoStatusDto) {
-		Todo todo = this.todoRepository.findById(UUID.fromString(id))
-				.orElseThrow(() -> new NotFoundException("Todo not found."));
-
+		Optional<Todo> findTodo = this.todoRepository.findById(UUID.fromString(id));
+		
+		if (!findTodo.isPresent()) {
+			throw new NotFoundException("Todo not found");
+		}
+		
+		Todo todo = findTodo.get();
 		todo.setStatus(Status.fromString(todoStatusDto.getStatus()));
 
 		return todo;

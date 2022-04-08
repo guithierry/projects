@@ -1,6 +1,7 @@
 package com.backend.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.transaction.Transactional;
@@ -25,6 +26,7 @@ public class ProjectService {
 		this.projectRepository = projectRepository;
 	}
 
+	@Transactional
 	public Project create(ProjectDto projectDto) {
 		Project project = new Project();
 
@@ -34,15 +36,25 @@ public class ProjectService {
 	}
 
 	public Project read(String id) {
-		return this.projectRepository.findById(UUID.fromString(id))
-				.orElseThrow(() -> new NotFoundException("Project not found"));
+		Optional<Project> project = this.projectRepository.findById(UUID.fromString(id));
+	
+		if (!project.isPresent()) {
+			throw new NotFoundException("Project not found");
+		}
+	
+		return project.get();
 	}
 
 	@Transactional
 	public Project update(String id, ProjectDto projectDto) {
-		Project project = this.projectRepository.findById(UUID.fromString(id))
-				.orElseThrow(() -> new NotFoundException("Project not found"));
+		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(id));
 
+		if (!findProject.isPresent()) {
+			throw new NotFoundException("Project not found");
+		}
+
+		Project project = findProject.get();
+		
 		if (projectDto.getName() != null) {
 			project.setName(projectDto.getName());
 		}
@@ -56,14 +68,19 @@ public class ProjectService {
 
 	@Transactional
 	public Project updateStatus(String id, ProjectStatusDto projectStatusDto) {
-		Project project = this.projectRepository.findById(UUID.fromString(id))
-				.orElseThrow(() -> new NotFoundException("Project not found"));
+		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(id));
 
+		if (!findProject.isPresent()) {
+			throw new NotFoundException("Project not found");
+		}
+
+		Project project = findProject.get();
 		project.setStatus(projectStatusDto.getStatus());
 
 		return project;
 	}
 
+	@Transactional
 	public void delete(String id) {
 		this.projectRepository.deleteById(UUID.fromString(id));
 	};
