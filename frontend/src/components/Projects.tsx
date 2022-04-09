@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import { Project } from "../types";
+import { Project, User } from "../types";
 import Header from "./Header";
 import ProjectFormModal from "./ProjectFormModal";
 
@@ -53,21 +53,86 @@ export default function Projects() {
                 </Row>
 
                 <Row>
-                    {projects.map(({ id, name, description }) => (
+                    {projects.map(({ id, name, description, users }) => (
                         <Col md={6} lg={4} className="mt-3" key={id}>
                             <Card body className="d-flex">
                                 <Card.Title>{name}</Card.Title>
 
                                 <Card.Text>{description}</Card.Text>
-
-                                <Button
-                                    as={Link}
-                                    to={`/${id}`}
-                                    variant="outline-dark"
-                                    size="sm"
+                                <div
+                                    className="d-flex justify-content-between"
+                                    style={{
+                                        position: "relative",
+                                    }}
                                 >
-                                    View
-                                </Button>
+                                    <Button
+                                        as={Link}
+                                        to={`/${id}`}
+                                        variant="outline-dark"
+                                        size="sm"
+                                    >
+                                        View
+                                    </Button>
+
+                                    {users &&
+                                        users.length > 0 &&
+                                        users
+                                            .slice(0, 6)
+                                            .map(
+                                                (user: User, index: number) => (
+                                                    <div
+                                                        key={user.id}
+                                                        title={user.name}
+                                                    >
+                                                        {user.picture ? (
+                                                            <img
+                                                                src={
+                                                                    user.picture
+                                                                }
+                                                                alt={user.email}
+                                                                style={{
+                                                                    maxWidth: 30,
+                                                                    maxHeight: 30,
+                                                                    borderRight:
+                                                                        "1px solid white",
+                                                                    borderRadius:
+                                                                        "50%",
+                                                                    background:
+                                                                        "#929292",
+                                                                    position:
+                                                                        "absolute",
+                                                                    zIndex: `${index}`,
+                                                                    right: `calc(${index} * 23px)`,
+                                                                }}
+                                                            />
+                                                        ) : (
+                                                            <div
+                                                                className="d-flex align-items-center justify-content-center"
+                                                                style={{
+                                                                    width: 30,
+                                                                    height: 30,
+                                                                    borderRight:
+                                                                        "1px solid white",
+                                                                    borderRadius:
+                                                                        "50%",
+                                                                    color: "white",
+                                                                    background:
+                                                                        "#929292",
+                                                                    position:
+                                                                        "absolute",
+                                                                    zIndex: `${index}`,
+                                                                    right: `calc(${index} * 23px)`,
+                                                                }}
+                                                            >
+                                                                {user.name
+                                                                    .charAt(0)
+                                                                    .toUpperCase()}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                )
+                                            )}
+                                </div>
                             </Card>
                         </Col>
                     ))}
