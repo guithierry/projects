@@ -21,12 +21,6 @@ public abstract class BasicEntity {
 	@Type(type = "uuid-char")
 	private UUID id;
 
-	@Column(name = "name", length = 100, nullable = false)
-	private String name;
-
-	@Column(name = "description", length = 150, nullable = false)
-	private String description;
-
 	@Column(name = "createdAt", nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
@@ -43,22 +37,6 @@ public abstract class BasicEntity {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
@@ -73,12 +51,5 @@ public abstract class BasicEntity {
 
 	public void setUpdatedAt(LocalDateTime updatedAt) {
 		this.updatedAt = updatedAt;
-	}
-
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder().append(this.id).append(" - ").append(this.name);
-
-		return sb.toString();
 	}
 }

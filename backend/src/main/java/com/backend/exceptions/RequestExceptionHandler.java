@@ -37,4 +37,12 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(body);
 	}
+	
+	@ExceptionHandler(UserAlreadyExistsException.class)
+	public ResponseEntity<Object> handleUserAlreadyExistsException(UserAlreadyExistsException ex) {
+		Map<String, Object> body = new HashMap<>();
+		body.put("message", ex.getMessage());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+	}
 }

@@ -1,5 +1,8 @@
 package com.backend.dtos;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
@@ -12,6 +15,8 @@ public class ProjectDto {
 	@NotBlank(message = "Description is required")
 	@Length(max = 150, message = "Description is higher than 150 caracteres")
 	private String description;
+	
+	private List<UserIdDto> users = new ArrayList<>();
 	
 	public String getName() {
 		return name;
@@ -29,8 +34,11 @@ public class ProjectDto {
 		this.description = description;
 	}
 	
-	@Override
-	public String toString() {
-		return this.name + " " + this.description;
+	public List<UserIdDto> getUsers() {
+		return users;
+	}
+	
+	public void setUsers(List<UserIdDto> users) {
+		this.users = users;
 	}
 }

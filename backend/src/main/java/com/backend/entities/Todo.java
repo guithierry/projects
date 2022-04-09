@@ -2,6 +2,7 @@ package com.backend.entities;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -12,14 +13,36 @@ import javax.persistence.Table;
 public class Todo extends BasicEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	private Status status;
+	@Column(name = "name", length = 100, nullable = false)
+	private String name;
 
+	@Column(name = "description", length = 150, nullable = false)
+	private String description;
+
+	private Status status;
+	
 	@ManyToOne()
 	@JoinColumn(name = "projectId", nullable = false)
 	private Project project;
 
 	public Todo() {
 		this.status = Status.TODO;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Status getStatus() {
@@ -33,7 +56,7 @@ public class Todo extends BasicEntity implements Serializable {
 	public Project getProject() {
 		return project;
 	}
-	
+
 	public void setProject(Project project) {
 		this.project = project;
 	}
