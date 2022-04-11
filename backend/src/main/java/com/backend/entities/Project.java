@@ -33,7 +33,7 @@ public class Project extends BasicEntity implements Serializable {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<Todo> todos = new ArrayList<>();
 	
-	@OneToMany
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private List<Comment> comments = new ArrayList<>();
 
 	public Project() {

@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -22,6 +23,9 @@ public class User extends BasicEntity implements Serializable {
 	
 	@ManyToMany(mappedBy = "users")
 	private List<Project> projects= new ArrayList<Project>();
+	
+	@OneToMany(mappedBy = "user")
+	private List<Comment> comments = new ArrayList<Comment>();
 	
 	public User() {
 	}
@@ -66,5 +70,14 @@ public class User extends BasicEntity implements Serializable {
 
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
+	}
+	
+	@JsonIgnore
+	public List<Comment> getComments() {
+		return comments;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

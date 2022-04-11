@@ -1,8 +1,10 @@
 package com.backend.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -15,9 +17,12 @@ public class Comment extends BasicEntity {
 	@Column(name = "description", nullable = false)
 	private String description;
 
-	// TODO: Add user
+	@ManyToOne(cascade = CascadeType.REFRESH)
+	@JoinColumn(name = "userId", nullable = false)
+	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "projectId", nullable = false)
 	private Project project;
 
 	public Comment() {
@@ -38,5 +43,13 @@ public class Comment extends BasicEntity {
 
 	public void setProject(Project project) {
 		this.project = project;
+	}
+	
+	public User getUser() {
+		return user;
+	}
+	
+	public void setUser(User user) {
+		this.user = user;
 	}
 }

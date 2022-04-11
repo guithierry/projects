@@ -11,6 +11,10 @@ public class CommentDto {
 	
 	@NotNull
 	@NotBlank
+	private String userId;
+	
+	@NotNull
+	@NotBlank
 	private String projectId;
 
 	public String getDescription() {
@@ -19,6 +23,14 @@ public class CommentDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getUserId() {
+		return userId;
+	}
+	
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	public String getProjectId() {

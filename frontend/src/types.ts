@@ -27,4 +27,5 @@ export interface User extends BasicEntity {
 }
 export interface Comment extends BasicEntity {
     description: string;
+    user: User;
 }

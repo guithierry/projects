@@ -98,7 +98,7 @@ export default function Comments({ projectId }: { projectId: string }) {
             </Form>
 
             <ListGroup className="mt-3 mb-3">
-                {comments.map(({ id, description, createdAt }) => (
+                {comments.map(({ id, description, user, createdAt }) => (
                     <ListGroup.Item className="d-flex" key={id}>
                         <div
                             className="d-flex justify-content-center align-items-center fw-bold text-dark"
@@ -114,7 +114,7 @@ export default function Comments({ projectId }: { projectId: string }) {
 
                         <div className="w-100 ps-3">
                             <div className="mt-2 d-flex justify-content-between">
-                                <h6 className="m-0">Guilherme</h6>
+                                <h6 className="m-0">{user.name}</h6>
                                 <small
                                     className="text-muted fw-bold"
                                     style={{
