@@ -12,12 +12,16 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 @Entity
 @Table(name = "project")
 public class Project extends BasicEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	@Column(name = "name", length = 100, nullable = false)
+	private String name;
+
+	@Column(name = "description", length = 150, nullable = false)
+	private String description;
 
 	@Column(name = "name", length = 100, nullable = false)
 	private String name;
@@ -33,11 +37,29 @@ public class Project extends BasicEntity implements Serializable {
 	private List<User> users = new ArrayList<>();
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Todo> todos = new ArrayList<>();;
+	private List<Todo> todos = new ArrayList<>();
+	
+	@OneToMany
+	private List<Comment> comments = new ArrayList<>();
 
 	public Project() {
 		this.status = Boolean.FALSE;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public String getName() {
@@ -82,5 +104,13 @@ public class Project extends BasicEntity implements Serializable {
 
 	public void setTodos(List<Todo> todos) {
 		this.todos = todos;
+	}
+	
+	public List<Comment> getComments() {
+		return comments;
+	}
+	
+	public void setComments(List<Comment> comments) {
+		this.comments = comments;
 	}
 }

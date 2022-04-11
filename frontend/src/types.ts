@@ -19,10 +19,12 @@ export interface Todo extends BasicEntity {
     status: string;
     project: Project;
 }
-
 export interface User extends BasicEntity {
     name: string;
     email: string;
     password: string;
     picture: string;
+}
+export interface Comment extends BasicEntity {
+    description: string;
 }

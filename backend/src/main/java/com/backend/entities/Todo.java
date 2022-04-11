@@ -8,6 +8,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name = "todo")
 public class Todo extends BasicEntity implements Serializable {
@@ -53,16 +55,12 @@ public class Todo extends BasicEntity implements Serializable {
 		this.status = status;
 	}
 
+	@JsonIgnore
 	public Project getProject() {
 		return project;
 	}
 
 	public void setProject(Project project) {
 		this.project = project;
-	}
-
-	@Override
-	public String toString() {
-		return this.getName() + " " + this.getProject().getName();
 	}
 }

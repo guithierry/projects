@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Dropdown } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Project, Todo } from "../types";
+import Comments from "./Comments";
 import Header from "./Header";
 import List from "./List";
 import TodoFormModal from "./TodoFormModal";
@@ -165,6 +166,14 @@ export default function Todos() {
                             />
                         </Col>
                     ))}
+                </Row>
+
+                <hr className="mt-5" />
+
+                <Row>
+                    <Col md={12}>
+                        <Comments projectId={projectId} />
+                    </Col>
                 </Row>
 
                 <TodoFormModal
