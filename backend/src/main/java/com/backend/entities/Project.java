@@ -23,12 +23,6 @@ public class Project extends BasicEntity implements Serializable {
 	@Column(name = "description", length = 150, nullable = false)
 	private String description;
 
-	@Column(name = "name", length = 100, nullable = false)
-	private String name;
-
-	@Column(name = "description", length = 150, nullable = false)
-	private String description;
-
 	@Column(name = "status", nullable = false)
 	private Boolean status;
 
@@ -58,22 +52,6 @@ public class Project extends BasicEntity implements Serializable {
 		return description;
 	}
 	
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
 	public void setDescription(String description) {
 		this.description = description;
 	}
