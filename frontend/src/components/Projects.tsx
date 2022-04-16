@@ -67,7 +67,7 @@ export default function Projects() {
                                 >
                                     <Button
                                         as={Link}
-                                        to={`/${id}`}
+                                        to={`/projects/${id}`}
                                         variant="outline-dark"
                                         size="sm"
                                     >
@@ -84,51 +84,28 @@ export default function Projects() {
                                                         key={user.id}
                                                         title={user.name}
                                                     >
-                                                        {user.picture ? (
-                                                            <img
-                                                                src={
-                                                                    user.picture
-                                                                }
-                                                                alt={user.email}
-                                                                style={{
-                                                                    maxWidth: 30,
-                                                                    maxHeight: 30,
-                                                                    borderRight:
-                                                                        "1px solid white",
-                                                                    borderRadius:
-                                                                        "50%",
-                                                                    background:
-                                                                        "#929292",
-                                                                    position:
-                                                                        "absolute",
-                                                                    zIndex: `${index}`,
-                                                                    right: `calc(${index} * 23px)`,
-                                                                }}
-                                                            />
-                                                        ) : (
-                                                            <div
-                                                                className="d-flex align-items-center justify-content-center"
-                                                                style={{
-                                                                    width: 30,
-                                                                    height: 30,
-                                                                    borderRight:
-                                                                        "1px solid white",
-                                                                    borderRadius:
-                                                                        "50%",
-                                                                    color: "white",
-                                                                    background:
-                                                                        "#929292",
-                                                                    position:
-                                                                        "absolute",
-                                                                    zIndex: `${index}`,
-                                                                    right: `calc(${index} * 23px)`,
-                                                                }}
-                                                            >
-                                                                {user.name
-                                                                    .charAt(0)
-                                                                    .toUpperCase()}
-                                                            </div>
-                                                        )}
+                                                        <div
+                                                            className="d-flex align-items-center justify-content-center"
+                                                            style={{
+                                                                width: 30,
+                                                                height: 30,
+                                                                borderRight:
+                                                                    "1px solid white",
+                                                                borderRadius:
+                                                                    "50%",
+                                                                color: "white",
+                                                                background:
+                                                                    "#929292",
+                                                                position:
+                                                                    "absolute",
+                                                                zIndex: `${index}`,
+                                                                right: `calc(${index} * 23px)`,
+                                                            }}
+                                                        >
+                                                            {user.name
+                                                                .charAt(0)
+                                                                .toUpperCase()}
+                                                        </div>
                                                     </div>
                                                 )
                                             )}

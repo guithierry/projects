@@ -19,8 +19,7 @@ function Item({ todo }: { todo: Todo }) {
             ref={dragRef}
             style={{
                 border: isDragging ? "2px dashed gray" : "",
-                opacity:
-                    todo.status.toLocaleLowerCase() === "done" ? "0.7" : "",
+                opacity: todo.status.toLowerCase() === "done" ? "0.7" : "",
             }}
             variant={isDragging ? "dark" : ""}
         >

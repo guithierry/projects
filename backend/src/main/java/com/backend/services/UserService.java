@@ -5,7 +5,6 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.UserDto;
@@ -17,9 +16,11 @@ import com.backend.repositories.UserRepository;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final AuthenticationService authenticationService;
 
-	public UserService(UserRepository userRepository) {
+	public UserService(UserRepository userRepository, AuthenticationService authenticationService) {
 		this.userRepository = userRepository;
+		this.authenticationService = authenticationService;
 	}
 
 	@Transactional
@@ -28,12 +29,16 @@ public class UserService {
 		Optional<User> findByEmail = this.userRepository.findByEmail(userDto.getEmail());
 
 		if (findByEmail.isPresent()) {
-			throw new UserAlreadyExistsException("User already exists");
+			throw new UserAlreadyExistsException("User email already exists");
 		}
 
 		User user = new User();
-		BeanUtils.copyProperties(userDto, user);
-
+		user.setName(userDto.getName());
+		user.setEmail(userDto.getEmail());
+		
+		String password = this.authenticationService.hashPassword(userDto.getPassword());
+		user.setPassword(password);
+		
 		return this.userRepository.save(user);
 	}
 

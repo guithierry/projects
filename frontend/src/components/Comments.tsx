@@ -3,6 +3,7 @@ import { Form, Button, ListGroup } from "react-bootstrap";
 import { Comment } from "../types";
 import Pagination from "./Pagination";
 import { dateFormat } from "../utils/dateFormat";
+import useAuth from "../hooks/useAuth";
 
 interface PaginationProps {
     totalPages: number;
@@ -15,11 +16,17 @@ export default function Comments({ projectId }: { projectId: string }) {
         number: 0,
         totalPages: 0,
     });
+    const { user } = useAuth();
 
     useEffect(() => {
         async function getComments() {
             const response = await fetch(
-                `http://localhost:8080/comments/${projectId}/?page=${pageable.number}`
+                `http://localhost:8080/comments/${projectId}/?page=${pageable.number}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }
             );
             const data = await response.json();
 
@@ -50,10 +57,11 @@ export default function Comments({ projectId }: { projectId: string }) {
         const response = await fetch("http://localhost:8080/comments", {
             method: "POST",
             headers: {
+                Authorization: `Bearer ${user.token}`,
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ description, projectId }),
+            body: JSON.stringify({ description, projectId, userId: user.id }),
         });
         const data = await response.json();
 
@@ -98,39 +106,41 @@ export default function Comments({ projectId }: { projectId: string }) {
             </Form>
 
             <ListGroup className="mt-3 mb-3">
-                {comments.map(({ id, description, user, createdAt }) => (
-                    <ListGroup.Item className="d-flex" key={id}>
-                        <div
-                            className="d-flex justify-content-center align-items-center fw-bold text-dark"
-                            style={{
-                                minWidth: 50,
-                                maxHeight: 50,
-                                borderRadius: "50%",
-                                background: "#e0e0e0",
-                            }}
-                        >
-                            G
-                        </div>
-
-                        <div className="w-100 ps-3">
-                            <div className="mt-2 d-flex justify-content-between">
-                                <h6 className="m-0">{user.name}</h6>
-                                <small
-                                    className="text-muted fw-bold"
-                                    style={{
-                                        fontSize: 11,
-                                    }}
-                                >
-                                    {dateFormat(createdAt)}
-                                </small>
+                {comments.map(
+                    ({ id, description, user: commentUser, createdAt }) => (
+                        <ListGroup.Item className="d-flex" key={id}>
+                            <div
+                                className="d-flex justify-content-center align-items-center fw-bold text-dark"
+                                style={{
+                                    minWidth: 50,
+                                    maxHeight: 50,
+                                    borderRadius: "50%",
+                                    background: "#e0e0e0",
+                                }}
+                            >
+                                {user.name.charAt(0).toUpperCase()}
                             </div>
 
-                            <p className="text-justify text-break">
-                                {description}
-                            </p>
-                        </div>
-                    </ListGroup.Item>
-                ))}
+                            <div className="w-100 ps-3">
+                                <div className="mt-2 d-flex justify-content-between">
+                                    <h6 className="m-0">{commentUser.name}</h6>
+                                    <small
+                                        className="text-muted fw-bold"
+                                        style={{
+                                            fontSize: 11,
+                                        }}
+                                    >
+                                        {dateFormat(createdAt)}
+                                    </small>
+                                </div>
+
+                                <p className="text-justify text-break">
+                                    {description}
+                                </p>
+                            </div>
+                        </ListGroup.Item>
+                    )
+                )}
             </ListGroup>
 
             <Pagination

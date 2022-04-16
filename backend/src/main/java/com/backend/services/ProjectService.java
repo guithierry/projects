@@ -33,11 +33,18 @@ public class ProjectService {
 	@Transactional
 	public Project create(ProjectDto projectDto) {
 		
+		User owner = this.userRepository.findById(UUID.fromString(projectDto.getOwnerId())).get();
+		
 		Project project = new Project();
 		project.setName(projectDto.getName());
 		project.setDescription(projectDto.getDescription());
-
+		project.setOwner(owner);
+		
+		owner.getOwnerProjects().add(project);
+		
 		List<User> users = new ArrayList<User>();
+		users.add(owner);
+		
 		projectDto.getUsers().forEach(u -> {
 			User user = this.userRepository.findById(u.getId()).get();
 			users.add(user);

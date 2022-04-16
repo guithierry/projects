@@ -4,6 +4,28 @@ import { useNavigate } from "react-router-dom";
 import ModalContainer from "./ModalContainer";
 import Select from "react-select";
 import { User } from "../types";
+import useAuth from "../hooks/useAuth";
+
+function Label({ user }: { user: User }) {
+    return (
+        <div className="d-flex align-items-center" key={user.id}>
+            <div
+                className="d-flex align-items-center justify-content-center text-light"
+                style={{
+                    width: 20,
+                    height: 20,
+                    borderRadius: "50%",
+                    background: "#929292",
+                }}
+            >
+                {user.name.charAt(0).toUpperCase()}
+            </div>
+            <span className="ms-3 text-truncate">
+                {user.name} - {user.email}
+            </span>
+        </div>
+    );
+}
 
 export default function ProjectFormModal({
     visible,
@@ -18,10 +40,15 @@ export default function ProjectFormModal({
     const navigate = useNavigate();
 
     const [users, setUsers] = useState([]);
+    const { user } = useAuth();
 
     useEffect(() => {
         async function getUsers() {
-            const response = await fetch("http://localhost:8080/users");
+            const response = await fetch("http://localhost:8080/users", {
+                headers: {
+                    Authorization: `Bearer ${user.token}`,
+                },
+            });
             const data = await response.json();
 
             setUsers(data);
@@ -30,40 +57,14 @@ export default function ProjectFormModal({
         getUsers();
     }, []);
 
-    const options = users.map((user: User) => {
-        return {
-            value: user.id,
-            label: (
-                <div className="d-flex align-items-center" key={user.id}>
-                    {user.picture ? (
-                        <img
-                            src={user.picture}
-                            style={{
-                                maxWidth: 20,
-                                maxHeight: 20,
-                                borderRadius: "50%",
-                            }}
-                        />
-                    ) : (
-                        <div
-                            className="d-flex align-items-center justify-content-center text-light"
-                            style={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: "50%",
-                                background: "#929292",
-                            }}
-                        >
-                            {user.name.charAt(0).toUpperCase()}
-                        </div>
-                    )}
-                    <span className="ms-3 text-truncate">
-                        {user.name} - {user.email}
-                    </span>
-                </div>
-            ),
-        };
-    });
+    const options = users
+        .filter((u: User) => u.id !== user.id)
+        .map((u: User) => {
+            return {
+                value: u.id,
+                label: <Label user={u} />,
+            };
+        });
 
     function filterOptions({ value }, input: string) {
         if (input) {
@@ -87,17 +88,23 @@ export default function ProjectFormModal({
         const response = await fetch("http://localhost:8080/projects", {
             method: "POST",
             headers: {
+                Authorization: `Bearer ${user.token}`,
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name, description, users: assignedUsers }),
+            body: JSON.stringify({
+                name,
+                description,
+                ownerId: user.id,
+                users: assignedUsers,
+            }),
         });
         const data = await response.json();
 
         setName("");
         setDescription("");
 
-        return navigate(`/${data.id}`);
+        return navigate(`/projects/${data.id}`);
     }
 
     return (
@@ -107,6 +114,11 @@ export default function ProjectFormModal({
             handleVisible={handleVisible}
         >
             <Form onSubmit={handleSubmit}>
+                <Form.Group>
+                    <Form.Label>Owner</Form.Label>
+                    <Form.Control disabled value={`You(${user.email})`} />
+                </Form.Group>
+
                 <Form.Group className="mt-3" controlId="project-name">
                     <Form.Label>Name</Form.Label>
 

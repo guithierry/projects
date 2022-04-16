@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -15,6 +16,10 @@ public class ProjectDto {
 	@NotBlank(message = "Description is required")
 	@Length(max = 150, message = "Description is higher than 150 caracteres")
 	private String description;
+	
+	@NotBlank(message = "Owner id is required")
+	@NotNull(message = "Owner id is required")
+	private String ownerId; 
 	
 	private List<UserIdDto> users = new ArrayList<>();
 	
@@ -32,6 +37,14 @@ public class ProjectDto {
 	
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	public String getOwnerId() {
+		return ownerId;
+	}
+	
+	public void setOwnerId(String ownerId) {
+		this.ownerId = ownerId;
 	}
 	
 	public List<UserIdDto> getUsers() {

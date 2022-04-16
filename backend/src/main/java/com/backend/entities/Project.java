@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,6 +27,9 @@ public class Project extends BasicEntity implements Serializable {
 	@Column(name = "status", nullable = false)
 	private Boolean status;
 
+	@ManyToOne
+	private User owner;
+	
 	@ManyToMany()
 	@JoinTable()
 	private List<User> users = new ArrayList<>();
@@ -62,6 +66,14 @@ public class Project extends BasicEntity implements Serializable {
 
 	public void setStatus(Boolean status) {
 		this.status = status;
+	}
+	
+	public User getOwner() {
+		return owner;
+	}
+	
+	public void setOwner(User owner) {
+		this.owner = owner;
 	}
 
 	public List<User> getUsers() {

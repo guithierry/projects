@@ -2,6 +2,7 @@ import { Form, Button } from "react-bootstrap";
 import { FormEvent, useState } from "react";
 import ModalContainer from "./ModalContainer";
 import { Todo } from "../types";
+import useAuth from "../hooks/useAuth";
 
 export default function TodoFormModal({
     projectId,
@@ -18,6 +19,7 @@ export default function TodoFormModal({
 }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
+    const { user } = useAuth();
 
     async function handleSubmit(event: FormEvent) {
         event.preventDefault();
@@ -29,6 +31,7 @@ export default function TodoFormModal({
         const response = await fetch(`http://localhost:8080/todos`, {
             method: "POST",
             headers: {
+                Authorization: `Bearer ${user.token}`,
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },

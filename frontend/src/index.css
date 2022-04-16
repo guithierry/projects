@@ -19,3 +19,36 @@
 .dropdown-toggle::after {
     display:none;
 }
+
+.show-left {
+    animation-name: showLeft;
+    animation-duration: .2s;
+}
+
+@keyframes showLeft {
+    
+    0% {
+        transform: translateX(-100px);
+    }
+
+    100% {
+        transform: translate(0px);
+    }
+}
+
+
+.show-right {
+    animation-name: showRight;
+    animation-duration: .2s;
+}
+
+@keyframes showRight {
+    
+    0% {
+        transform: translateX(100px);
+    }
+
+    100% {
+        transform: translate(0px);
+    }
+}

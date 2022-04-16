@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Dropdown } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import { Project, Todo } from "../types";
 import Comments from "./Comments";
 import Header from "./Header";
@@ -9,17 +10,23 @@ import TodoFormModal from "./TodoFormModal";
 
 export default function Todos() {
     const location = useLocation();
-    const projectId = location.pathname.split("/")[1];
+    const projectId = location.pathname.split("/")[2];
 
     const [project, setProject] = useState<Project>({} as Project);
     const [todos, setTodos] = useState([]);
 
+    const { user } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
         async function handleGetProject() {
             const response = await fetch(
-                `http://localhost:8080/projects/${projectId}`
+                `http://localhost:8080/projects/${projectId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }
             );
             const data = await response.json();
 
@@ -30,7 +37,12 @@ export default function Todos() {
 
         async function handleGetTodos() {
             const response = await fetch(
-                `http://localhost:8080/todos/project/${projectId}`
+                `http://localhost:8080/todos/project/${projectId}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }
             );
             const data = await response.json();
             setTodos(data);
@@ -59,6 +71,7 @@ export default function Todos() {
         await fetch(`http://localhost:8080/todos/${id}`, {
             method: "PATCH",
             headers: {
+                Authorization: `Bearer ${user.token}`,
                 Accept: "application/json",
                 "Content-Type": "application/json",
             },
@@ -71,9 +84,12 @@ export default function Todos() {
     async function handleDeleteProject() {
         await fetch(`http://localhost:8080/projects/${projectId}`, {
             method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${user.token}`,
+            },
         });
 
-        return navigate("/");
+        return navigate("/projects");
     }
 
     return (
@@ -86,36 +102,40 @@ export default function Todos() {
                         <div className="d-flex align-items-center justify-content-between">
                             <h3>{project?.name}</h3>
 
-                            <Dropdown>
-                                <Dropdown.Toggle
-                                    variant="outline-dark"
-                                    id="actions"
-                                    size="sm"
-                                >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="20"
-                                        height="20"
-                                        fill="currentColor"
-                                        className="bi bi-three-dots"
-                                        viewBox="0 0 16 16"
+                            {project.owner?.id === user.id && (
+                                <Dropdown>
+                                    <Dropdown.Toggle
+                                        variant="outline-dark"
+                                        id="actions"
+                                        size="sm"
                                     >
-                                        <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
-                                    </svg>
-                                </Dropdown.Toggle>
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="20"
+                                            height="20"
+                                            fill="currentColor"
+                                            className="bi bi-three-dots"
+                                            viewBox="0 0 16 16"
+                                        >
+                                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                                        </svg>
+                                    </Dropdown.Toggle>
 
-                                <Dropdown.Menu align="end">
-                                    <Dropdown.Item as={Button}>
-                                        Edit
-                                    </Dropdown.Item>
-                                    <Dropdown.Item
-                                        as={Button}
-                                        onClick={() => handleDeleteProject()}
-                                    >
-                                        Delete
-                                    </Dropdown.Item>
-                                </Dropdown.Menu>
-                            </Dropdown>
+                                    <Dropdown.Menu align="end">
+                                        <Dropdown.Item as={Button}>
+                                            Edit
+                                        </Dropdown.Item>
+                                        <Dropdown.Item
+                                            as={Button}
+                                            onClick={() =>
+                                                handleDeleteProject()
+                                            }
+                                        >
+                                            Delete
+                                        </Dropdown.Item>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
                         </div>
 
                         <p className="lead text-muted text-break">
