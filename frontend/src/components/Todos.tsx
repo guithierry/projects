@@ -2,11 +2,12 @@ import { useState, useEffect } from "react";
 import { Container, Row, Col, Button, Dropdown } from "react-bootstrap";
 import { useLocation, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
-import { Project, Todo } from "../types";
+import { Project, Todo, User } from "../types";
 import Comments from "./Comments";
 import Header from "./Header";
 import List from "./List";
 import TodoFormModal from "./TodoFormModal";
+import ProjectUsersModal from "./ProjectUsersModal";
 
 export default function Todos() {
     const location = useLocation();
@@ -92,6 +93,8 @@ export default function Todos() {
         return navigate("/projects");
     }
 
+    const [projectUsersModal, setProjectUsersModal] = useState(false);
+
     return (
         <>
             <Header />
@@ -141,6 +144,70 @@ export default function Todos() {
                         <p className="lead text-muted text-break">
                             {project?.description}
                         </p>
+
+                        <div style={{ position: "relative" }}>
+                            {project.users &&
+                                project.users.length > 0 &&
+                                project.users
+                                    .slice(0, 6)
+                                    .map((user: User, index: number) => (
+                                        <div key={user.id} title={user.name}>
+                                            <div
+                                                className="d-flex align-items-center justify-content-center"
+                                                style={{
+                                                    width: 30,
+                                                    height: 30,
+                                                    borderLeft:
+                                                        "1px solid white",
+                                                    borderRadius: "50%",
+                                                    color: "white",
+                                                    background: "#929292",
+                                                    position: "absolute",
+                                                    zIndex: `${index}`,
+                                                    left: `calc(${index} * 23px)`,
+                                                }}
+                                            >
+                                                {user.name
+                                                    .charAt(0)
+                                                    .toUpperCase()}
+                                            </div>
+                                        </div>
+                                    ))}
+
+                            {project.users && project.users.length > 6 && (
+                                <div
+                                    title="Users"
+                                    onClick={() =>
+                                        setProjectUsersModal(!projectUsersModal)
+                                    }
+                                >
+                                    <div
+                                        className="d-flex align-items-center justify-content-center"
+                                        style={{
+                                            width: 30,
+                                            height: 30,
+                                            borderLeft: "1px solid white",
+                                            borderRadius: "50%",
+                                            color: "white",
+                                            background: "#929292",
+                                            position: "absolute",
+                                            zIndex: 6,
+                                            left: 138,
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        <span
+                                            style={{
+                                                fontSize: 11,
+                                                fontWeight: "bold",
+                                            }}
+                                        >
+                                            +{project.users.length - 6}
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </Col>
                 </Row>
 
@@ -202,6 +269,14 @@ export default function Todos() {
                     setTodos={setTodos}
                     visible={todoFormModal}
                     handleVisible={() => setTodoFormModal(!todoFormModal)}
+                />
+
+                <ProjectUsersModal
+                    users={project.users}
+                    visible={projectUsersModal}
+                    handleVisible={() =>
+                        setProjectUsersModal(!projectUsersModal)
+                    }
                 />
             </Container>
         </>
