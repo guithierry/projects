@@ -1,9 +1,15 @@
-import { ListGroup } from "react-bootstrap";
+import { ListGroup, Dropdown, Button } from "react-bootstrap";
 import { useDrag, useDrop } from "react-dnd";
 import { Todo } from "../types";
 import { format } from "date-fns";
 
-function Item({ todo }: { todo: Todo }) {
+function Item({
+    todo,
+    moveTodo,
+}: {
+    todo: Todo;
+    moveTodo(...props: any): void;
+}) {
     const [{ isDragging }, dragRef] = useDrag(() => ({
         type: "ITEM",
         item: {
@@ -25,6 +31,42 @@ function Item({ todo }: { todo: Todo }) {
         >
             <div className="d-flex w-100 justify-content-between">
                 <h5 className="mb-1">{todo.name}</h5>
+
+                <Dropdown>
+                    <Dropdown.Toggle
+                        variant="outline-dark"
+                        id="todo-actions"
+                        size="sm"
+                        className="border-0"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            fill="currentColor"
+                            className="bi bi-three-dots"
+                            viewBox="0 0 16 16"
+                        >
+                            <path d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3zm5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" />
+                        </svg>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu align="end">
+                        {["todo", "doing", "done"].map((status) => {
+                            return (
+                                todo.status.toLowerCase() !== status && (
+                                    <Dropdown.Item
+                                        as={Button}
+                                        onClick={() => moveTodo(todo, status)}
+                                    >
+                                        {status.charAt(0).toUpperCase() +
+                                            status.slice(1)}
+                                    </Dropdown.Item>
+                                )
+                            );
+                        })}
+                    </Dropdown.Menu>
+                </Dropdown>
             </div>
 
             <p className="mb-1">{todo.description}</p>
@@ -86,7 +128,7 @@ export default function List({
                 {data
                     .filter((todo) => todo.status.toLowerCase() === status)
                     .map((todo: Todo) => (
-                        <Item key={todo.id} todo={todo} />
+                        <Item key={todo.id} todo={todo} moveTodo={moveTodo} />
                     ))}
             </ListGroup>
         </>
