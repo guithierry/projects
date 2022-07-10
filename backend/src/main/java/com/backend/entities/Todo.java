@@ -4,27 +4,24 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "todo")
 public class Todo extends BasicEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "name", length = 100, nullable = false)
+	@Column(length = 100, nullable = false)
 	private String name;
 
-	@Column(name = "description", length = 150, nullable = false)
+	@Column(length = 150, nullable = false)
 	private String description;
 
 	private Status status;
 	
-	@ManyToOne()
-	@JoinColumn(name = "projectId", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private Project project;
 
 	public Todo() {
@@ -54,12 +51,11 @@ public class Todo extends BasicEntity implements Serializable {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
-	@JsonIgnore
+	
 	public Project getProject() {
 		return project;
 	}
-
+	
 	public void setProject(Project project) {
 		this.project = project;
 	}

@@ -1,6 +1,7 @@
 package com.backend.controllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.dtos.ProjectDto;
 import com.backend.dtos.ProjectStatusDto;
-import com.backend.entities.Project;
+import com.backend.dtos.response.ProjectResponseDto;
 import com.backend.services.ProjectService;
 
 @RestController
@@ -35,35 +36,35 @@ public class ProjectController {
 
 	@PostMapping
 	public ResponseEntity<Object> create(@Valid @RequestBody ProjectDto projectDto) {
-		Project project = projectService.create(projectDto);
+		ProjectResponseDto project = projectService.create(projectDto);
 
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
 
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<Object> read(@PathVariable(name = "id") String id) {
-		Project project = this.projectService.read(id);
+	public ResponseEntity<Object> read(@PathVariable(name = "id") UUID id) {
+		ProjectResponseDto project = this.projectService.read(id);
 
 		return ResponseEntity.status(HttpStatus.OK).body(project);
 	}
 
 	@PutMapping(path = "/{id}")
-	public ResponseEntity<Object> update(@PathVariable(name = "id") String id, @RequestBody ProjectDto projectDto) {
-		Project project = this.projectService.update(id, projectDto);
+	public ResponseEntity<Object> update(@PathVariable(name = "id") UUID id, @RequestBody ProjectDto projectDto) {
+		this.projectService.update(id, projectDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(project);
+		return ResponseEntity.ok().build();
 	}
 
 	@PatchMapping(path = "/{id}")
-	public ResponseEntity<Object> updateStatus(@PathVariable(name = "id") String id,
+	public ResponseEntity<Void> updateStatus(@PathVariable(name = "id") UUID id,
 			@RequestBody ProjectStatusDto projectStatusDto) {
-		Project project = this.projectService.updateStatus(id, projectStatusDto);
+		this.projectService.updateStatus(id, projectStatusDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(project);
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable(name = "id") String id) {
+	public ResponseEntity<Void> delete(@PathVariable(name = "id") UUID id) {
 		this.projectService.delete(id);
 
 		return ResponseEntity.ok().build();
@@ -71,7 +72,7 @@ public class ProjectController {
 
 	@GetMapping
 	public ResponseEntity<Object> getProjects() {
-		List<Project> projects = this.projectService.getProjects();
+		List<ProjectResponseDto> projects = this.projectService.getProjects();
 
 		return ResponseEntity.status(HttpStatus.OK).body(projects);
 	}

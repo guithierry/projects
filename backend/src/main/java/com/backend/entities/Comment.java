@@ -1,10 +1,7 @@
 package com.backend.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -14,17 +11,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "comment")
 public class Comment extends BasicEntity {
 
-	@Column(name = "description", nullable = false)
 	private String description;
 
-	@ManyToOne(cascade = CascadeType.REFRESH)
-	@JoinColumn(name = "userId", nullable = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "projectId", nullable = false)
 	private Project project;
-
+	
 	public Comment() {
 	}
 
@@ -35,21 +29,26 @@ public class Comment extends BasicEntity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
-	@JsonIgnore
-	public Project getProject() {
-		return project;
-	}
-
-	public void setProject(Project project) {
-		this.project = project;
-	}
 	
+	@JsonIgnore
 	public User getUser() {
 		return user;
 	}
 	
 	public void setUser(User user) {
 		this.user = user;
+	}
+	
+	public Project getProject() {
+		return project;
+	}
+	
+	public void setProject(Project project) {
+		this.project = project;
+	}
+	
+	@Override
+	public String toString() {
+		return super.getId() + " " + this.description;
 	}
 }

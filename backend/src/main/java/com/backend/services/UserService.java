@@ -1,6 +1,5 @@
 package com.backend.services;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.transaction.Transactional;
@@ -8,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.UserDto;
+import com.backend.dtos.response.UserResponseDto;
 import com.backend.entities.User;
 import com.backend.exceptions.UserAlreadyExistsException;
 import com.backend.repositories.UserRepository;
@@ -24,7 +24,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public User create(UserDto userDto) {
+	public UserResponseDto create(UserDto userDto) {
 
 		Optional<User> findByEmail = this.userRepository.findByEmail(userDto.getEmail());
 
@@ -35,14 +35,12 @@ public class UserService {
 		User user = new User();
 		user.setName(userDto.getName());
 		user.setEmail(userDto.getEmail());
-		
+
 		String password = this.authenticationService.hashPassword(userDto.getPassword());
 		user.setPassword(password);
-		
-		return this.userRepository.save(user);
-	}
 
-	public List<User> getAll() {
-		return this.userRepository.findAll();
+		User entity = this.userRepository.save(user);
+
+		return new UserResponseDto(entity);
 	}
 }

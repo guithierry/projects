@@ -1,6 +1,7 @@
 package com.backend.controllers;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.Valid;
 
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.backend.dtos.TodoDto;
 import com.backend.dtos.TodoStatusDto;
-import com.backend.entities.Todo;
+import com.backend.dtos.response.TodoResponseDto;
 import com.backend.services.TodoService;
 
 @RestController
@@ -34,36 +35,36 @@ public class TodoController {
 
 	@PostMapping
 	public ResponseEntity<Object> create(@Valid @RequestBody TodoDto todoDto) {
-		Todo todo = this.todoService.create(todoDto);
+		TodoResponseDto todo = this.todoService.create(todoDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(todo);
 	}
 
 	@GetMapping(path = "/{id}")
-	public ResponseEntity<Object> read(@PathVariable(name = "id") String id) {
-		Todo todo = this.todoService.read(id);
+	public ResponseEntity<Object> read(@PathVariable(name = "id") UUID id) {
+		TodoResponseDto todo = this.todoService.read(id);
 
 		return ResponseEntity.status(HttpStatus.OK).body(todo);
 	}
 
 	@PatchMapping(path = "/{id}")
-	public ResponseEntity<Object> updateStatus(@PathVariable(name = "id") String id,
+	public ResponseEntity<Object> updateStatus(@PathVariable(name = "id") UUID id,
 			@RequestBody TodoStatusDto todoStatusDto) {
-		Todo todo = this.todoService.updateStatus(id, todoStatusDto);
+		this.todoService.updateStatus(id, todoStatusDto);
 
-		return ResponseEntity.status(HttpStatus.OK).body(todo);
+		return ResponseEntity.ok().build();
 	}
 
 	@DeleteMapping(path = "/{id}")
-	public ResponseEntity<Void> delete(@PathVariable(name = "id") String id) {
+	public ResponseEntity<Void> delete(@PathVariable(name = "id") UUID id) {
 		this.todoService.delete(id);
 
 		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping(path = "/project/{id}")
-	public ResponseEntity<Object> getTodos(@PathVariable(name = "id") String id) {
-		List<Todo> todos = this.todoService.getTodos(id);
+	public ResponseEntity<Object> getTodos(@PathVariable(name = "id") UUID id) {
+		List<TodoResponseDto> todos = this.todoService.getTodos(id);
 
 		return ResponseEntity.status(HttpStatus.OK).body(todos);
 	}

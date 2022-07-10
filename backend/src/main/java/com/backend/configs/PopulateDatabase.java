@@ -15,7 +15,7 @@ import com.backend.repositories.ProjectRepository;
 import com.backend.repositories.TodoRepository;
 import com.backend.repositories.UserRepository;
 
-@Configuration
+//@Configuration
 public class PopulateDatabase {
 
 	private UserRepository userRepository;
@@ -31,7 +31,7 @@ public class PopulateDatabase {
 		this.commentRepository = commentRepository;
 	}
 	
-	@Bean
+//	@Bean
 	public void run() {
 		Optional<User> email1 = this.userRepository.findByEmail("guilherme.thierry99@email.com");
 		Optional<User> email2 = this.userRepository.findByEmail("test@email.com");
@@ -46,25 +46,21 @@ public class PopulateDatabase {
 			user2.setName("Test User");
 			user2.setEmail("test@email.com");
 
-			Todo todo = new Todo();
-			todo.setName("Login");
-			todo.setDescription("UI to login on app");
-
-			Todo todo2 = new Todo();
-			todo2.setName("Dashboard");
-			todo2.setDescription("Dashboard to list something");
-
 			Project project = new Project();
 			project.setName("Mobile App");
 			project.setDescription("Some description to project");
+
+			Todo todo = new Todo();
+			todo.setName("Login");
+			todo.setDescription("UI to login on app");
+			todo.setProject(project);
+			
+			Todo todo2 = new Todo();
+			todo2.setName("Dashboard");
+			todo2.setDescription("Dashboard to list something");
+			todo2.setProject(project);
 			
 			project.setOwner(user1);
-			user1.getOwnerProjects().add(project);
-			
-			project.getUsers().addAll(Stream.of(user1, user2).toList());
-
-			todo.setProject(project);
-			todo2.setProject(project);
 
 			Comment comment = new Comment();
 			comment.setDescription("Lets go!!");
@@ -75,7 +71,10 @@ public class PopulateDatabase {
 			comment2.setDescription("Lets work");
 			comment2.setUser(user2);
 			comment2.setProject(project);
-
+			
+			project.addUser(user1);
+			project.addUser(user2);
+			
 			this.userRepository.saveAll(Stream.of(user1, user2).toList());
 			this.projectRepository.save(project);
 			this.todoRepository.saveAll(Stream.of(todo, todo2).toList());

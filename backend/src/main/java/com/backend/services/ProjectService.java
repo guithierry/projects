@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import com.backend.dtos.ProjectDto;
 import com.backend.dtos.ProjectStatusDto;
+import com.backend.dtos.response.ProjectResponseDto;
+import com.backend.dtos.response.UserResponseDto;
 import com.backend.entities.Project;
 import com.backend.entities.User;
 import com.backend.exceptions.NotFoundException;
@@ -31,43 +34,49 @@ public class ProjectService {
 	}
 
 	@Transactional
-	public Project create(ProjectDto projectDto) {
-		
+	public ProjectResponseDto create(ProjectDto projectDto) {
+
 		User owner = this.userRepository.findById(UUID.fromString(projectDto.getOwnerId())).get();
-		
+
 		Project project = new Project();
 		project.setName(projectDto.getName());
 		project.setDescription(projectDto.getDescription());
 		project.setOwner(owner);
-		
-		owner.getOwnerProjects().add(project);
-		
+
 		List<User> users = new ArrayList<User>();
 		users.add(owner);
-		
+
 		projectDto.getUsers().forEach(u -> {
 			User user = this.userRepository.findById(u.getId()).get();
 			users.add(user);
 		});
-		
+
 		project.setUsers(users);
-		
-		return this.projectRepository.save(project);
+
+		Project entity = this.projectRepository.save(project);
+
+		ProjectResponseDto projectResponseDto = new ProjectResponseDto(entity);
+		projectResponseDto.setOwner(new UserResponseDto(entity.getOwner()));
+
+		return projectResponseDto;
 	}
 
-	public Project read(String id) {
-		Optional<Project> project = this.projectRepository.findById(UUID.fromString(id));
+	public ProjectResponseDto read(UUID id) {
+		Optional<Project> project = this.projectRepository.findById(id);
 
 		if (!project.isPresent()) {
 			throw new NotFoundException("Project not found");
 		}
 
-		return project.get();
+		ProjectResponseDto projectResponseDto = new ProjectResponseDto(project.get());
+		projectResponseDto.setOwner(new UserResponseDto(project.get().getOwner()));
+
+		return projectResponseDto;
 	}
 
 	@Transactional
-	public Project update(String id, ProjectDto projectDto) {
-		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(id));
+	public void update(UUID id, ProjectDto projectDto) {
+		Optional<Project> findProject = this.projectRepository.findById(id);
 
 		if (!findProject.isPresent()) {
 			throw new NotFoundException("Project not found");
@@ -82,30 +91,31 @@ public class ProjectService {
 		if (projectDto.getDescription() != null) {
 			project.setDescription(projectDto.getDescription());
 		}
-
-		return project;
 	}
 
 	@Transactional
-	public Project updateStatus(String id, ProjectStatusDto projectStatusDto) {
-		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(id));
+	public void updateStatus(UUID id, ProjectStatusDto projectStatusDto) {
+		Optional<Project> project = this.projectRepository.findById(id);
 
-		if (!findProject.isPresent()) {
+		if (!project.isPresent()) {
 			throw new NotFoundException("Project not found");
 		}
 
-		Project project = findProject.get();
-		project.setStatus(projectStatusDto.getStatus());
-
-		return project;
+		project.get().setStatus(projectStatusDto.getStatus());
 	}
 
 	@Transactional
-	public void delete(String id) {
-		this.projectRepository.deleteById(UUID.fromString(id));
+	public void delete(UUID id) {
+		this.projectRepository.deleteById(id);
 	};
 
-	public List<Project> getProjects() {
-		return this.projectRepository.findAll();
+	public List<ProjectResponseDto> getProjects() {
+
+		return this.projectRepository.findAll().stream().map(project -> {
+			ProjectResponseDto projectResponseDto = new ProjectResponseDto(project);
+			projectResponseDto.setOwner(new UserResponseDto(project.getOwner()));
+
+			return projectResponseDto;
+		}).collect(Collectors.toList());
 	}
 }

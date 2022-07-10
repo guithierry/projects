@@ -3,17 +3,18 @@ package com.backend.services;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.TodoDto;
 import com.backend.dtos.TodoStatusDto;
-import com.backend.entities.Status;
+import com.backend.dtos.response.TodoResponseDto;
 import com.backend.entities.Project;
+import com.backend.entities.Status;
 import com.backend.entities.Todo;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.ProjectRepository;
@@ -32,7 +33,7 @@ public class TodoService {
 	}
 
 	@Transactional
-	public Todo create(TodoDto todoDto) {
+	public TodoResponseDto create(TodoDto todoDto) {
 		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(todoDto.getProjectId()));
 
 		if (!findProject.isPresent()) {
@@ -42,44 +43,42 @@ public class TodoService {
 		Project project = findProject.get();
 
 		Todo todo = new Todo();
-		BeanUtils.copyProperties(todoDto, todo);
+		todo.setName(todoDto.getName());
+		todo.setDescription(todoDto.getDescription());
 		todo.setProject(project);
 
-		project.getTodos().add(todo);
+		Todo entity = this.todoRepository.save(todo);
 
-		return todo;
+		return new TodoResponseDto(entity);
 	}
 
-	public Todo read(String id) {
-		Optional<Todo> todo = this.todoRepository.findById(UUID.fromString(id));
-		
+	public TodoResponseDto read(UUID id) {
+		Optional<Todo> todo = this.todoRepository.findById(id);
+
 		if (!todo.isPresent()) {
 			throw new NotFoundException("Todo not found");
 		}
-		
-		return todo.get();
+
+		return new TodoResponseDto(todo.get());
 	}
 
 	@Transactional
-	public void delete(String id) {
-		this.todoRepository.deleteById(UUID.fromString(id));
+	public void delete(UUID id) {
+		this.todoRepository.deleteById(id);
 	}
 
 	@Transactional
-	public Todo updateStatus(String id, TodoStatusDto todoStatusDto) {
-		Optional<Todo> findTodo = this.todoRepository.findById(UUID.fromString(id));
-		
-		if (!findTodo.isPresent()) {
+	public void updateStatus(UUID id, TodoStatusDto todoStatusDto) {
+		Optional<Todo> todo = this.todoRepository.findById(id);
+
+		if (!todo.isPresent()) {
 			throw new NotFoundException("Todo not found");
 		}
-		
-		Todo todo = findTodo.get();
-		todo.setStatus(Status.fromString(todoStatusDto.getStatus()));
 
-		return todo;
+		todo.get().setStatus(Status.fromString(todoStatusDto.getStatus()));
 	}
 
-	public List<Todo> getTodos(String id) {
-		return this.todoRepository.findByProjectId(UUID.fromString(id));
+	public List<TodoResponseDto> getTodos(UUID id) {
+		return this.todoRepository.findByProjectId(id).stream().map(TodoResponseDto::new).collect(Collectors.toList());
 	}
 }

@@ -17,15 +17,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 public abstract class BasicEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "id", unique = true, nullable = false, updatable = false)
+	@Column(unique = true, nullable = false, updatable = false)
 	@Type(type = "uuid-char")
 	private UUID id;
 
-	@Column(name = "createdAt", nullable = false, updatable = false)
+	@Column(nullable = false, updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
 
-	@Column(name = "updatedAt")
 	@UpdateTimestamp
 	private LocalDateTime updatedAt;
 
