@@ -1,0 +1,35 @@
+version: "3"
+
+services:
+    database:
+        image: mysql:latest
+        command: --default-authentication-plugin=mysql_native_password
+        ports:
+            - 3306:3306
+        volumes:
+            - databasedir:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: projects
+
+    backend:
+        build: backend
+        ports:
+            - 8080:8080
+        environment:
+            - DATABASE_HOST=database
+        depends_on:
+            - database 
+                # condition: service_healthy
+        # restart until the database connection is ready
+        restart: on-failure
+
+    frontend:
+        build: frontend
+        ports:
+            - 3000:3000
+        depends_on:
+            - backend
+
+volumes:
+    databasedir: {}
