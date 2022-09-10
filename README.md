@@ -12,28 +12,12 @@
 -   [React-dnd](https://react-dnd.github.io/react-dnd/about)
 -   Bootstrap
 
-## Run
+## Run with docker-compose
 
 ```bash
 git clone https://github.com/guithierry/projects.git
+
 cd projects
-```
 
-#### Backend
-
-```bash
-cd backend
-
-mvn spring:boot-run
-```
-
-#### Frontend
-
-```bash
-cd frontend
-
-yarn
-
-yarn dev
-
+docker-compose up
 ```
