@@ -11,19 +11,18 @@ services:
         environment:
             MYSQL_ROOT_PASSWORD: root
             MYSQL_DATABASE: projects
-        networks:
-            - projects
 
     backend:
         build: backend
         ports:
             - 8080:8080
-        depends_on:
-            - database
         environment:
             - DATABASE_HOST=database
-        networks:
-            - projects
+        depends_on:
+            - database 
+                # condition: service_healthy
+        # restart until the database connection is ready
+        restart: on-failure
 
     frontend:
         build: frontend
@@ -31,12 +30,6 @@ services:
             - 3000:3000
         depends_on:
             - backend
-        networks:
-            - projects
 
 volumes:
     databasedir: {}
-
-networks:
-    projects:
-        driver: bridge
