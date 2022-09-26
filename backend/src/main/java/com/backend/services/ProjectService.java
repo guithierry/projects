@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.ProjectDto;
@@ -24,10 +23,9 @@ import com.backend.repositories.UserRepository;
 @Service
 public class ProjectService {
 
-	private final ProjectRepository projectRepository;
-	private final UserRepository userRepository;
-
-	@Autowired
+	private ProjectRepository projectRepository;
+	private UserRepository userRepository;
+	
 	public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
 		this.projectRepository = projectRepository;
 		this.userRepository = userRepository;
@@ -47,14 +45,14 @@ public class ProjectService {
 		users.add(owner);
 
 		projectDto.getUsers().forEach(u -> {
-			User user = this.userRepository.findById(u.getId()).get();
+			User user = this.userRepository.findById(u).get();
 			users.add(user);
 		});
 
 		project.setUsers(users);
 
 		Project entity = this.projectRepository.save(project);
-
+		
 		ProjectResponseDto projectResponseDto = new ProjectResponseDto(entity);
 		projectResponseDto.setOwner(new UserResponseDto(entity.getOwner()));
 

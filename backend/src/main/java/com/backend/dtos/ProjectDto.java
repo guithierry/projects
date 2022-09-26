@@ -2,6 +2,7 @@ package com.backend.dtos;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ public class ProjectDto {
 	@NotNull(message = "Owner id is required")
 	private String ownerId; 
 	
-	private List<UserIdDto> users = new ArrayList<>();
+	private List<UUID> users = new ArrayList<>();
 	
 	public String getName() {
 		return name;
@@ -47,11 +48,11 @@ public class ProjectDto {
 		this.ownerId = ownerId;
 	}
 	
-	public List<UserIdDto> getUsers() {
+	public List<UUID> getUsers() {
 		return users;
 	}
 	
-	public void setUsers(List<UserIdDto> users) {
+	public void setUsers(List<UUID> users) {
 		this.users = users;
 	}
 }
