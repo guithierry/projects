@@ -1,5 +1,6 @@
 package com.backend.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,8 +50,15 @@ public class ProjectService {
 		project.setDescription(projectDto.getDescription());
 		project.setOwner(owner);
 
-		List<User> users = this.userRepository.findAllById(projectDto.getUsers());
+		List<User> users = new ArrayList<User>();
 		users.add(owner);
+
+		if (!projectDto.getUsers().isEmpty()) {
+			projectDto.getUsers().stream().forEach((id) -> {
+				User user = this.userRepository.findById(id).get();
+				users.add(user);
+			});
+		}
 
 		project.setUsers(users);
 
@@ -118,6 +126,9 @@ public class ProjectService {
 		return this.projectRepository.findAll().stream().map(project -> {
 			ProjectResponseDto projectResponseDto = new ProjectResponseDto(project);
 			projectResponseDto.setOwner(new UserResponseDto(project.getOwner()));
+
+			List<UserResponseDto> users = project.getUsers().stream().map(UserResponseDto::new).toList();
+			projectResponseDto.setUsers(users);
 
 			return projectResponseDto;
 		}).collect(Collectors.toList());

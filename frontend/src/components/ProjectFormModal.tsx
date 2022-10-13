@@ -81,9 +81,7 @@ export default function ProjectFormModal({
             return;
         }
 
-        const assignedUsers = assigns.map((assign) => ({
-            id: assign.value,
-        }));
+        const assignedUsers = assigns.map((assign) => assign.value);
 
         const response = await fetch("http://localhost:8080/projects", {
             method: "POST",
@@ -99,6 +97,7 @@ export default function ProjectFormModal({
                 users: assignedUsers,
             }),
         });
+
         const data = await response.json();
 
         setName("");

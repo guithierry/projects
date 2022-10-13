@@ -76,6 +76,7 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 		this.projects = projects;
 	}
 
+	@JsonIgnore
 	public List<Notification> getNotifications() {
 		return notifications;
 	}
