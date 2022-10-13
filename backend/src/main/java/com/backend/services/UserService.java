@@ -1,8 +1,6 @@
 package com.backend.services;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -44,9 +42,5 @@ public class UserService {
 		User entity = this.userRepository.save(user);
 
 		return new UserResponseDto(entity);
-	}
-
-	public List<UserResponseDto> getAll() {
-		return this.userRepository.findAll().stream().map(UserResponseDto::new).collect(Collectors.toList());
 	}
 }
