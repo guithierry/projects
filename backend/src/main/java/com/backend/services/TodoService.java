@@ -1,5 +1,6 @@
 package com.backend.services;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -7,34 +8,42 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.backend.dtos.NotificationDto;
 import com.backend.dtos.TodoDto;
 import com.backend.dtos.TodoStatusDto;
 import com.backend.dtos.response.TodoResponseDto;
+import com.backend.entities.NotificationType;
 import com.backend.entities.Project;
 import com.backend.entities.Status;
 import com.backend.entities.Todo;
+import com.backend.entities.User;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.ProjectRepository;
 import com.backend.repositories.TodoRepository;
+import com.backend.services.notifications.NotificationService;
+import com.backend.services.notifications.TodoNotificationService;
 
 @Service
 public class TodoService {
 
-	private final TodoRepository todoRepository;
-	private final ProjectRepository projectRepository;
+	private TodoRepository todoRepository;
+	private ProjectRepository projectRepository;
+	private NotificationService notificationService;
+	private TodoNotificationService todoNotificationService;
 
-	@Autowired
-	public TodoService(TodoRepository todoRepository, ProjectRepository projectRepository) {
+	public TodoService(TodoRepository todoRepository, ProjectRepository projectRepository,
+			NotificationService notificationService, TodoNotificationService todoNotificationService) {
 		this.todoRepository = todoRepository;
 		this.projectRepository = projectRepository;
+		this.notificationService = notificationService;
+		this.todoNotificationService = todoNotificationService;
 	}
 
 	@Transactional
 	public TodoResponseDto create(TodoDto todoDto) {
-		Optional<Project> findProject = this.projectRepository.findById(UUID.fromString(todoDto.getProjectId()));
+		Optional<Project> findProject = this.projectRepository.findById(todoDto.getProjectId());
 
 		if (!findProject.isPresent()) {
 			throw new NotFoundException("Project not found");
@@ -69,13 +78,20 @@ public class TodoService {
 
 	@Transactional
 	public void updateStatus(UUID id, TodoStatusDto todoStatusDto) {
-		Optional<Todo> todo = this.todoRepository.findById(id);
+		Todo todo = this.todoRepository.findById(id).get();
 
-		if (!todo.isPresent()) {
-			throw new NotFoundException("Todo not found");
+		todo.setStatus(Status.fromString(todoStatusDto.getStatus()));
+
+		if (todo.getStatus().equals(Status.DONE) && todo.getAssigned() != null) {
+
+			User owner = todo.getProject().getOwner();
+			User assigned = todo.getAssigned();
+
+			List<User> users = Arrays.asList(owner, assigned);
+
+			this.notificationService.create(this.todoNotificationService, new NotificationDto(
+					NotificationType.TODO_NOTIFICATION, "Notification message when todo is done", users, null, todo));
 		}
-
-		todo.get().setStatus(Status.fromString(todoStatusDto.getStatus()));
 	}
 
 	public List<TodoResponseDto> getTodos(UUID id) {

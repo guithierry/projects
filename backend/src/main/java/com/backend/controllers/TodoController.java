@@ -3,8 +3,6 @@ package com.backend.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +32,7 @@ public class TodoController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> create(@Valid @RequestBody TodoDto todoDto) {
+	public ResponseEntity<Object> create(@RequestBody TodoDto todoDto) {
 		TodoResponseDto todo = this.todoService.create(todoDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(todo);

@@ -20,9 +20,12 @@ public class Todo extends BasicEntity implements Serializable {
 	private String description;
 
 	private Status status;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Project project;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	private User assigned;
 
 	public Todo() {
 		this.status = Status.TODO;
@@ -51,12 +54,20 @@ public class Todo extends BasicEntity implements Serializable {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-	
+
 	public Project getProject() {
 		return project;
 	}
-	
+
 	public void setProject(Project project) {
 		this.project = project;
+	}
+
+	public User getAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(User assigned) {
+		this.assigned = assigned;
 	}
 }

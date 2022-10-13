@@ -2,8 +2,6 @@ package com.backend.controllers;
 
 import java.util.UUID;
 
-import javax.validation.Valid;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +28,7 @@ public class CommentController {
 	}
 
 	@PostMapping
-	public ResponseEntity<Object> create(@Valid @RequestBody CommentDto commentDto) {
+	public ResponseEntity<Object> create(@RequestBody CommentDto commentDto) {
 		CommentResponseDto comment = this.commentService.create(commentDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(comment);

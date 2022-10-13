@@ -24,10 +24,13 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 	private String email;
 	private String password;
 	private String picture;
-	
+
 	@ManyToMany(mappedBy = "users")
 	private List<Project> projects = new ArrayList<Project>();
-	
+
+	@ManyToMany(mappedBy = "users")
+	private List<Notification> notifications = new ArrayList<Notification>();
+
 	public User() {
 	}
 
@@ -55,11 +58,11 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
+
 	public String getPicture() {
 		return picture;
 	}
-	
+
 	public void setPicture(String picture) {
 		this.picture = picture;
 	}
@@ -73,9 +76,17 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 		this.projects = projects;
 	}
 
+	public List<Notification> getNotifications() {
+		return notifications;
+	}
+
+	public void setNotifications(List<Notification> notifications) {
+		this.notifications = notifications;
+	}
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		List<GrantedAuthority> authorities =  new ArrayList<>();
+		List<GrantedAuthority> authorities = new ArrayList<>();
 		authorities.add(new SimpleGrantedAuthority("ROLE_" + "USER"));
 
 		return authorities;
