@@ -133,4 +133,16 @@ public class ProjectService {
 			return projectResponseDto;
 		}).collect(Collectors.toList());
 	}
+
+	public List<ProjectResponseDto> getUserProjects(UUID id) {
+		return this.projectRepository.findByUsers_Id(id).stream().map((project) -> {
+			ProjectResponseDto projectResponseDto = new ProjectResponseDto(project);
+			projectResponseDto.setOwner(new UserResponseDto(project.getOwner()));
+
+			List<UserResponseDto> users = project.getUsers().stream().map(UserResponseDto::new).toList();
+			projectResponseDto.setUsers(users);
+
+			return projectResponseDto;
+		}).collect(Collectors.toList());
+	}
 }

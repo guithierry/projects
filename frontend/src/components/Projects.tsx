@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 import { Project, User } from "../types";
 import Header from "./Header";
 import ProjectFormModal from "./ProjectFormModal";
@@ -8,9 +9,18 @@ import ProjectFormModal from "./ProjectFormModal";
 export default function Projects() {
     const [projects, setProjects] = useState<Project[]>([]);
 
+    const { user } = useAuth();
+
     useEffect(() => {
         async function handleGetProjects() {
-            const response = await fetch("http://localhost:8080/projects");
+            const response = await fetch(
+                `http://localhost:8080/users/${user.id}/projects`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${user.token}`,
+                    },
+                }
+            );
             const data = await response.json();
             setProjects(data);
         }
