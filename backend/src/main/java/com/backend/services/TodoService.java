@@ -1,6 +1,6 @@
 package com.backend.services;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -95,8 +95,13 @@ public class TodoService {
 			User owner = todo.getProject().getOwner();
 			User assigned = todo.getAssigned();
 
-			List<User> users = Arrays.asList(owner, assigned);
-
+			List<User> users = new ArrayList<User>();
+			users.add(owner);
+			
+			if (!assigned.getId().equals(owner.getId())) {
+				users.add(assigned);
+			}
+			
 			this.notificationService.create(this.todoNotificationService, new NotificationDto(
 					NotificationType.TODO_NOTIFICATION, "Notification message when todo is done", users, null, todo));
 		}

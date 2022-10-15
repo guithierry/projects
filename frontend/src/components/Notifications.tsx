@@ -84,7 +84,12 @@ export default function Notifications() {
                             </p>
                         </div>
                     </Popover.Header>
-                    <Popover.Body className="m-0 p-0">
+                    <Popover.Body
+                        className="m-0 p-0 overflow-styles"
+                        style={{
+                            maxHeight: "80vh",
+                        }}
+                    >
                         {notifications && notifications.length > 0 && (
                             <ListGroup>
                                 {notifications.map(
