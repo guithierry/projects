@@ -116,11 +116,6 @@ public class ProjectService {
 		project.get().setStatus(projectStatusDto.getStatus());
 	}
 
-	@Transactional
-	public void delete(UUID id) {
-		this.projectRepository.deleteById(id);
-	};
-
 	public List<ProjectResponseDto> getProjects() {
 
 		return this.projectRepository.findAll().stream().map(project -> {

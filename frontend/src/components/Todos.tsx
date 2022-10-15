@@ -84,17 +84,6 @@ export default function Todos() {
 
     const [todoFormModal, setTodoFormModal] = useState(false);
 
-    async function handleDeleteProject() {
-        await fetch(`http://localhost:8080/projects/${projectId}`, {
-            method: "DELETE",
-            headers: {
-                Authorization: `Bearer ${user.token}`,
-            },
-        });
-
-        return navigate("/projects");
-    }
-
     const [projectUsersModal, setProjectUsersModal] = useState(false);
 
     return (
@@ -129,14 +118,6 @@ export default function Todos() {
                                     <Dropdown.Menu align="end">
                                         <Dropdown.Item as={Button}>
                                             Edit
-                                        </Dropdown.Item>
-                                        <Dropdown.Item
-                                            as={Button}
-                                            onClick={() =>
-                                                handleDeleteProject()
-                                            }
-                                        >
-                                            Delete
                                         </Dropdown.Item>
                                     </Dropdown.Menu>
                                 </Dropdown>
