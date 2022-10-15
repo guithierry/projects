@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.backend.dtos.AssignTodoDto;
 import com.backend.dtos.TodoDto;
 import com.backend.dtos.TodoStatusDto;
 import com.backend.dtos.response.TodoResponseDto;
@@ -65,5 +66,12 @@ public class TodoController {
 		List<TodoResponseDto> todos = this.todoService.getTodos(id);
 
 		return ResponseEntity.status(HttpStatus.OK).body(todos);
+	}
+
+	@PostMapping("/{id}/users")
+	public ResponseEntity<Object> assignUser(@PathVariable("id") UUID id, @RequestBody AssignTodoDto assignTodoDto) {
+		TodoResponseDto todoResponseDto =  this.todoService.assignUser(id, assignTodoDto);
+
+		return ResponseEntity.status(HttpStatus.OK).body(todoResponseDto);
 	}
 }

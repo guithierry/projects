@@ -35,7 +35,9 @@ export default function Todos() {
         }
 
         handleGetProject();
+    }, [projectId]);
 
+    useEffect(() => {
         async function handleGetTodos() {
             const response = await fetch(
                 `http://localhost:8080/todos/project/${projectId}`,
@@ -50,7 +52,7 @@ export default function Todos() {
         }
 
         handleGetTodos();
-    }, [projectId]);
+    }, []);
 
     async function moveTodo(todo: Todo, status: string) {
         setTodos((state) => {

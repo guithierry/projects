@@ -3,7 +3,6 @@ package com.backend.controllers;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,17 +18,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.backend.dtos.ProjectDto;
 import com.backend.dtos.ProjectStatusDto;
 import com.backend.dtos.response.ProjectResponseDto;
+import com.backend.dtos.response.UserResponseDto;
 import com.backend.services.ProjectService;
+import com.backend.services.UserService;
 
 @RestController
 @RequestMapping(path = "/projects")
 public class ProjectController {
 
-	private final ProjectService projectService;
-
-	@Autowired
-	public ProjectController(ProjectService projectService) {
+	private ProjectService projectService;
+	private UserService userService;
+	
+	public ProjectController(ProjectService projectService, UserService userService) {
 		this.projectService = projectService;
+		this.userService = userService;
 	}
 
 	@PostMapping
@@ -71,6 +73,13 @@ public class ProjectController {
 	@GetMapping
 	public ResponseEntity<Object> getProjects() {
 		List<ProjectResponseDto> projects = this.projectService.getProjects();
+
+		return ResponseEntity.status(HttpStatus.OK).body(projects);
+	}
+
+	@GetMapping("/{id}/users")
+	public ResponseEntity<Object> getProjectUsers(@PathVariable("id") UUID id) {
+		List<UserResponseDto> projects = this.userService.getProjectUsers(id);
 
 		return ResponseEntity.status(HttpStatus.OK).body(projects);
 	}

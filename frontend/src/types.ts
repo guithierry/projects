@@ -19,6 +19,7 @@ export interface Todo extends BasicEntity {
     description: string;
     status: string;
     project: Project;
+    assigned: User;
 }
 
 export interface User extends BasicEntity {

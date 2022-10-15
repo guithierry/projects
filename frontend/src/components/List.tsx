@@ -2,6 +2,8 @@ import { ListGroup, Dropdown, Button } from "react-bootstrap";
 import { useDrag, useDrop } from "react-dnd";
 import { Todo } from "../types";
 import { format } from "date-fns";
+import { useState } from "react";
+import AssignUserModal from "./AssignUserModal";
 
 function Item({
     todo,
@@ -20,6 +22,8 @@ function Item({
         }),
     }));
 
+    const [assignUserModal, setAssignUserModal] = useState(false);
+
     return (
         <ListGroup.Item
             ref={dragRef}
@@ -30,7 +34,13 @@ function Item({
             variant={isDragging ? "dark" : ""}
         >
             <div className="d-flex w-100 justify-content-between">
-                <h5 className="mb-1">{todo.name}</h5>
+                <h5
+                    title={todo.name}
+                    className="mb-1 d-inline-block text-truncate"
+                    style={{ maxWidth: 325 }}
+                >
+                    {todo.name}
+                </h5>
 
                 <Dropdown>
                     <Dropdown.Toggle
@@ -56,6 +66,7 @@ function Item({
                             return (
                                 todo.status.toLowerCase() !== status && (
                                     <Dropdown.Item
+                                        key={status}
                                         as={Button}
                                         onClick={() => moveTodo(todo, status)}
                                     >
@@ -71,14 +82,56 @@ function Item({
 
             <p className="mb-1">{todo.description}</p>
 
-            <small
-                className="p-1 rounded-3 bg-dark text-light"
-                style={{
-                    fontSize: 11,
-                }}
-            >
-                {format(new Date(todo.createdAt), "MMM dd")}
-            </small>
+            <div className="d-flex justify-content-between align-items-center">
+                <small
+                    className="p-1 rounded-3 bg-dark text-light"
+                    style={{
+                        fontSize: 11,
+                    }}
+                >
+                    {format(new Date(todo.createdAt), "MMM dd")}
+                </small>
+
+                {!todo.assigned && (
+                    <p
+                        className="mb-0 link-danger"
+                        style={{
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                        }}
+                        onClick={() => setAssignUserModal(!assignUserModal)}
+                    >
+                        Assign User
+                    </p>
+                )}
+
+                {todo.assigned && (
+                    <div
+                        title={todo.assigned?.name}
+                        className="d-flex align-items-center justify-content-center"
+                        style={{
+                            width: 30,
+                            height: 30,
+                            borderRadius: "50%",
+                            color: "white",
+                            background: "#929292",
+                        }}
+                    >
+                        {todo.assigned?.name.charAt(0).toUpperCase() +
+                            status.slice(1)}
+                    </div>
+                )}
+
+                {assignUserModal && (
+                    <AssignUserModal
+                        todo={todo}
+                        visible={assignUserModal}
+                        handleVisible={() =>
+                            setAssignUserModal(!assignUserModal)
+                        }
+                    />
+                )}
+            </div>
         </ListGroup.Item>
     );
 }

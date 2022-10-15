@@ -6,11 +6,12 @@ public class TodoDto {
 	private UUID projectId;
 	private String name;
 	private String description;
+	private UUID userId;
 
 	public UUID getProjectId() {
 		return projectId;
 	}
-	
+
 	public void setProjectId(UUID projectId) {
 		this.projectId = projectId;
 	}
@@ -29,5 +30,13 @@ public class TodoDto {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public UUID getUserId() {
+		return userId;
+	}
+
+	public void setUserId(UUID userId) {
+		this.userId = userId;
 	}
 }

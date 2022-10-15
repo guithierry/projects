@@ -2,6 +2,7 @@ package com.backend.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -49,4 +50,10 @@ public class UserService {
 	public List<UserResponseDto> getAll() {
 		return this.userRepository.findAll().stream().map(UserResponseDto::new).collect(Collectors.toList());
 	}
+
+	public List<UserResponseDto> getProjectUsers(UUID id) {
+		return this.userRepository.findByProjects_Id(id).stream().map(UserResponseDto::new)
+				.collect(Collectors.toList());
+	}
+
 }

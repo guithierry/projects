@@ -8,6 +8,7 @@ public class TodoResponseDto extends BasicResponseDto<Todo> {
 	private String name;
 	private String description;
 	private Status status;
+	private UserResponseDto assigned;
 
 	public TodoResponseDto(Todo entity) {
 		super(entity);
@@ -38,5 +39,13 @@ public class TodoResponseDto extends BasicResponseDto<Todo> {
 
 	public void setStatus(Status status) {
 		this.status = status;
+	}
+
+	public UserResponseDto getAssigned() {
+		return assigned;
+	}
+
+	public void setAssigned(UserResponseDto assigned) {
+		this.assigned = assigned;
 	}
 }
