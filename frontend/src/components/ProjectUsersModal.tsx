@@ -25,7 +25,10 @@ export default function ProjectUsersModal({
             >
                 {users &&
                     users.map(({ name, email }) => (
-                        <div className="pt-1 pb-2 d-flex align-items-center border-bottom">
+                        <div
+                            className="pt-1 pb-2 d-flex align-items-center border-bottom"
+                            key={email}
+                        >
                             <div
                                 className="d-flex align-items-center justify-content-center"
                                 style={{

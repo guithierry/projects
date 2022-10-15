@@ -83,6 +83,9 @@ public class ProjectService {
 		ProjectResponseDto projectResponseDto = new ProjectResponseDto(project.get());
 		projectResponseDto.setOwner(new UserResponseDto(project.get().getOwner()));
 
+		List<UserResponseDto> users = project.get().getUsers().stream().map(UserResponseDto::new).collect(Collectors.toList());
+		projectResponseDto.setUsers(users);
+		
 		return projectResponseDto;
 	}
 
