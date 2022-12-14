@@ -28,9 +28,6 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 	@ManyToMany(mappedBy = "users")
 	private List<Project> projects = new ArrayList<Project>();
 
-	@ManyToMany(mappedBy = "users")
-	private List<Notification> notifications = new ArrayList<Notification>();
-
 	public User() {
 	}
 
@@ -74,15 +71,6 @@ public class User extends BasicEntity implements Serializable, UserDetails {
 
 	public void setProjects(List<Project> projects) {
 		this.projects = projects;
-	}
-
-	@JsonIgnore
-	public List<Notification> getNotifications() {
-		return notifications;
-	}
-
-	public void setNotifications(List<Notification> notifications) {
-		this.notifications = notifications;
 	}
 
 	@Override

@@ -33,10 +33,3 @@ export interface Comment extends BasicEntity {
     description: string;
     user: User;
 }
-
-export type NotificationType = "PROJECT_NOTIFICATION" | "TODO_NOTIFICATION";
-export interface Notification extends BasicEntity {
-    message: String;
-    notificationType: NotificationType;
-    status: boolean;
-}

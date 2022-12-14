@@ -10,34 +10,25 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Service;
 
-import com.backend.dtos.NotificationDto;
 import com.backend.dtos.ProjectDto;
 import com.backend.dtos.ProjectStatusDto;
 import com.backend.dtos.response.ProjectResponseDto;
 import com.backend.dtos.response.UserResponseDto;
-import com.backend.entities.NotificationType;
 import com.backend.entities.Project;
 import com.backend.entities.User;
 import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.ProjectRepository;
 import com.backend.repositories.UserRepository;
-import com.backend.services.notifications.NotificationService;
-import com.backend.services.notifications.ProjectNotificationService;
 
 @Service
 public class ProjectService {
 
 	private ProjectRepository projectRepository;
 	private UserRepository userRepository;
-	private NotificationService notificationService;
-	private ProjectNotificationService projectNotificationService;
 
-	public ProjectService(ProjectRepository projectRepository, UserRepository userRepository,
-			NotificationService notificationService, ProjectNotificationService projectNotificationService) {
+	public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
 		this.projectRepository = projectRepository;
 		this.userRepository = userRepository;
-		this.notificationService = notificationService;
-		this.projectNotificationService = projectNotificationService;
 	}
 
 	@Transactional
@@ -64,9 +55,6 @@ public class ProjectService {
 
 		Project entity = this.projectRepository.save(project);
 
-		this.notificationService.create(this.projectNotificationService, new NotificationDto(
-				NotificationType.PROJECT_NOTIFICATION, "You have been added to a new project.", users, entity, null));
-
 		ProjectResponseDto projectResponseDto = new ProjectResponseDto(entity);
 		projectResponseDto.setOwner(new UserResponseDto(entity.getOwner()));
 
@@ -83,9 +71,10 @@ public class ProjectService {
 		ProjectResponseDto projectResponseDto = new ProjectResponseDto(project.get());
 		projectResponseDto.setOwner(new UserResponseDto(project.get().getOwner()));
 
-		List<UserResponseDto> users = project.get().getUsers().stream().map(UserResponseDto::new).collect(Collectors.toList());
+		List<UserResponseDto> users = project.get().getUsers().stream().map(UserResponseDto::new)
+				.collect(Collectors.toList());
 		projectResponseDto.setUsers(users);
-		
+
 		return projectResponseDto;
 	}
 

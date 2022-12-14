@@ -11,12 +11,10 @@ import javax.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import com.backend.dtos.AssignTodoDto;
-import com.backend.dtos.NotificationDto;
 import com.backend.dtos.TodoDto;
 import com.backend.dtos.TodoStatusDto;
 import com.backend.dtos.response.TodoResponseDto;
 import com.backend.dtos.response.UserResponseDto;
-import com.backend.entities.NotificationType;
 import com.backend.entities.Project;
 import com.backend.entities.Status;
 import com.backend.entities.Todo;
@@ -25,25 +23,18 @@ import com.backend.exceptions.NotFoundException;
 import com.backend.repositories.ProjectRepository;
 import com.backend.repositories.TodoRepository;
 import com.backend.repositories.UserRepository;
-import com.backend.services.notifications.NotificationService;
-import com.backend.services.notifications.TodoNotificationService;
 
 @Service
 public class TodoService {
 
 	private TodoRepository todoRepository;
 	private ProjectRepository projectRepository;
-	private NotificationService notificationService;
-	private TodoNotificationService todoNotificationService;
 	private UserRepository userRepository;
 
 	public TodoService(TodoRepository todoRepository, ProjectRepository projectRepository,
-			NotificationService notificationService, TodoNotificationService todoNotificationService,
 			UserRepository userRepository) {
 		this.todoRepository = todoRepository;
 		this.projectRepository = projectRepository;
-		this.notificationService = notificationService;
-		this.todoNotificationService = todoNotificationService;
 		this.userRepository = userRepository;
 	}
 
@@ -65,7 +56,7 @@ public class TodoService {
 
 		TodoResponseDto todoResponseDto = new TodoResponseDto(entity);
 		todoResponseDto.setAssigned(new UserResponseDto(entity.getAssigned()));
-		
+
 		return todoResponseDto;
 	}
 
@@ -97,21 +88,19 @@ public class TodoService {
 
 			List<User> users = new ArrayList<User>();
 			users.add(owner);
-			
+
 			if (!assigned.getId().equals(owner.getId())) {
 				users.add(assigned);
 			}
-			
-			this.notificationService.create(this.todoNotificationService, new NotificationDto(
-					NotificationType.TODO_NOTIFICATION, "Notification message when todo is done", users, null, todo));
+
 		}
 	}
 
 	public List<TodoResponseDto> getTodos(UUID id) {
 		return this.todoRepository.findByProjectId(id).stream().map((todo) -> {
 			TodoResponseDto todoResponseDto = new TodoResponseDto(todo);
-			
-			if (todo.getAssigned() != null) { 
+
+			if (todo.getAssigned() != null) {
 				todoResponseDto.setAssigned(new UserResponseDto(todo.getAssigned()));
 			}
 
@@ -129,7 +118,7 @@ public class TodoService {
 
 		TodoResponseDto todoResponseDto = new TodoResponseDto(entity);
 		todoResponseDto.setAssigned(new UserResponseDto(todo.getAssigned()));
-		
+
 		return todoResponseDto;
 	}
 }
